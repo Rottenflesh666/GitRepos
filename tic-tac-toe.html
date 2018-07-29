@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Tic-tac-toe</title>
+<style>
+	table
+	{
+		table-layout: fixed;
+		border-collapse: collapse;
+	}
+	TD
+	{
+		width: 200px;
+		height: 210px;
+		padding: 3px;
+	}
+</style>
+	
+<script>
+	var turn = true;// true = horde
+	var end = false;
+	var steps;
+	var player; //bot or not
+	var newTable;
+	
+	function lblSizeChange()
+	{
+		var lblSizeText = document.getElementById("lblSize");
+		var number = document.getElementById("inputSize").value;		
+		lblSizeText.value=number+"x"+number;
+	}
+										
+	function checkWinner()
+	{
+		steps--;
+		var vertical = true, horizontal = true, diagLeft = true, diagRight = true;
+		var number = document.getElementById("inputSize").value;
+		if(!turn)
+		{
+			for(i = 0; i < number; i++)
+			{
+				vertical = true, horizontal = true;
+				for(j = 0; j < number; j++)
+				{
+					if(newTable.rows[i].cells[j].id != "H") horizontal = false;
+					if(newTable.rows[number - 1 - j].cells[i].id != "H") vertical = false;
+					if(i == j && newTable.rows[i].cells[j].id != "H") diagLeft = false;
+					if(newTable.rows[i].cells[number - 1 - i].id != "H") diagRight = false;
+				}
+			
+				if(horizontal || vertical)
+				{
+					alert("Horde wins!");
+					end = true;
+					return;
+				}				
+			}
+			if(diagLeft || diagRight)
+			{
+				alert("Horde wins!");
+				end = true;
+				return;
+			}
+		}
+		else
+		{
+			for(i = 0; i < number; i++)
+			{
+				vertical = true, horizontal = true;
+				for(j = 0; j < number; j++)
+				{
+					if(newTable.rows[i].cells[j].id != "A") horizontal = false;
+					if(newTable.rows[number - 1 - j].cells[i].id != "A") vertical = false;
+					if(i == j && newTable.rows[i].cells[j].id != "A") diagLeft = false;
+					if(newTable.rows[i].cells[number - 1 - i].id != "A") diagRight = false;
+				}
+			
+				if(horizontal || vertical)
+				{
+					alert("Alliance wins!");
+					end = true;
+					return;
+				}				
+			}
+			if(diagLeft || diagRight)
+			{
+				alert("Alliance wins!");
+				end = true;
+				return;
+			}
+		}
+	}
+	
+	function sillyBot()
+	{
+		var emptyTiles = [];
+		//var table = document.querySelector("table");
+		for(i = 0, tr = newTable.querySelectorAll("tr"); i < tr.length; i++)
+			for(j = 0; j < tr[i].querySelectorAll("td").length; j++)
+				if(tr[i].querySelectorAll("td")[j].innerHTML == "") 
+					emptyTiles.push(tr[i].querySelectorAll("td")[j]);
+		
+		if(emptyTiles.length != 0)
+		{
+			var randIndex = 0 - 0.5 + Math.random()*emptyTiles.length;
+			randIndex = Math.round(randIndex);
+			emptyTiles[randIndex].click();
+			
+		}
+	}
+
+	function createTable()
+	{	
+		var numberField = document.getElementById("inputSize");
+		numberField.readOnly = true;
+		
+		var sumbitButton = document.getElementById("btnSumb");
+		sumbitButton.disabled = "disabled";
+		
+		var number = numberField.value;
+		steps = number * number;
+		newTable = document.createElement("table");
+		newTable.border = "1";
+		for(i = 0; i < number; i++)
+		{
+			var newRow = newTable.insertRow(i);
+			for(j = 0; j < number; j++)
+			{
+				var newCell = newRow.insertCell(j);
+				newCell.onclick = putImage;
+			}	
+		}	
+		document.body.appendChild(newTable);
+		
+		player = document.getElementById("p2").checked;
+		//if(document.getElementById("p1"))
+		if(!player)   
+		{
+			if(document.getElementById("f2").checked)
+			{
+				document.getElementById("curTurnAlert").value = "FOR THE HORDE!";
+			}
+			else
+			{
+				turn = false;
+				document.getElementById("curTurnAlert").value = "Alliance turn to attack!";
+			}
+			sillyBot();
+		}
+		else
+		{
+			if(document.getElementById("f2").checked)
+			{
+				turn = false;
+				document.getElementById("curTurnAlert").value = "Alliance turn to attack!";
+			}
+			else
+				document.getElementById("curTurnAlert").value = "FOR THE HORDE!";				
+		}
+	}
+	
+	function hordeImg(curCell)
+	{
+		curCell.innerHTML = "<img src = 'horde1.png'>";
+		turn = false;
+		document.getElementById("curTurnAlert").value = "Alliance turn to attack!";
+		curCell.id = "H";
+	}
+	
+	function allianceImg(curCell)
+	{
+		curCell.innerHTML = "<img src = 'alliance.png'>";
+		turn = true;
+		document.getElementById("curTurnAlert").value = "FOR THE HORDE!";
+		curCell.id = "A"
+	}
+	
+	function putImage()
+	{
+		player = !player;
+		if(this.innerHTML == "" && turn == true)
+		{
+			hordeImg(this);
+		}
+		else if(this.innerHTML =="")
+		{
+			allianceImg(this);
+		}
+		checkWinner()
+		
+		if(!player && !end) 
+			sillyBot();
+		
+		if(end) location.reload();
+		
+		if(steps == 0 && !end)
+		{
+			alert("Draw :P");
+			location.reload();
+		}
+	}
+
+</script>	
+
+
+</head>
+
+<body>
+<input id="inputSize" type="number" min="3" max="10" value="3" size="1" onChange="lblSizeChange()">
+<input id="lblSize" type="text"  max="10" size="1" readonly="true" value="3x3">
+<input id="curTurnAlert" type="text" style="border: 0; font-size: 40; left: 100; color: red" readonly="true"><br>
+	
+Choose who would be first  [
+<input type="radio" id="p1" name="firstTurn" value="comp">Computer
+<input type="radio" id="p2" name="firstTurn" value="player" checked>Player ] <br>
+	
+Choose fraction [
+<input type="radio" id="f1" name="fraction" value="horde" checked>Horde
+<input type="radio" id="f2" name="fraction" value="alliance">Alliance ] <br>
+	
+<button id="btnSumb" onClick="createTable();">Sumbit</button>
+
+
+
+</body>
+</html>
