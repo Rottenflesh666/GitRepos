@@ -1,0 +1,12 @@
+@charset "utf-8";
+table
+{
+	table-layout: fixed;
+	border-collapse: collapse;
+}
+TD
+{
+	width: 200px;
+	height: 210px;
+	padding: 3px;
+}
