@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Tic-tac-toe</title>
+	<link rel="stylesheet" type="text/css" href="assets/css/table.css">	
+	<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+	<script src="assets/js/core.js"></script>
+</head>
+
+<body>
+	<input id="inputSize" type="number" min="3" max="10" value="3" size="1" onChange="lblSizeChange()">
+	<input id="lblSize" type="text"  max="10" size="1" readonly="true" value="3x3">
+	<input id="curTurnAlert" type="text" style="border: 0; font-size: 40; left: 100; color: red" readonly="true"><br>
+	
+	Choose who would be first  [
+	<input type="radio" id="playerBot" name="firstTurn" value="comp">Computer
+	<input type="radio" id="playerReal" name="firstTurn" value="player" checked>Player ] <br>
+	
+	Choose fraction [
+	<input type="radio" id="fracHorde" name="fraction" value="horde" checked>Horde
+	<input type="radio" id="fracAlliance" name="fraction" value="alliance">Alliance ] <br>
+	<button id="btnSubm" onClick="createTable();">Submit</button>
+</body>
+</html>
